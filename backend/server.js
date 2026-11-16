@@ -1,4 +1,5 @@
 const express=require("express");
+const crypto=require("crypto");
 
 const app=express();
 app.use(express.json());
@@ -11,6 +12,8 @@ app.get("/",(req,res)=> {
 
 app.post("/api/urls",(req,res)=> {
   const originalUrl=req.body.originalUrl;
+  const shortCode=crypto.randomBytes(4).toString("hex");
+  const shortUrl=`http://localhost:${PORT}/${shortCode}`;
   if(!originalUrl){
     res.status(400).json({
       message:"URL is reqired"
@@ -24,8 +27,10 @@ app.post("/api/urls",(req,res)=> {
     });
   }
   res.json({
-    message:"URL recieved succesfully",
-    originalUrl:originalUrl
+    message:"URL shorened succesfully",
+    originalUrl,
+    shortCode,
+    shortUrl
   });
 });
 
