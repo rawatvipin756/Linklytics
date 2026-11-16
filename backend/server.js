@@ -12,10 +12,8 @@ app.get("/",(req,res)=> {
 
 app.post("/api/urls",(req,res)=> {
   const originalUrl=req.body.originalUrl;
-  const shortCode=crypto.randomBytes(4).toString("hex");
-  const shortUrl=`http://localhost:${PORT}/${shortCode}`;
   if(!originalUrl){
-    res.status(400).json({
+    return res.status(400).json({
       message:"URL is reqired"
     });
   }
@@ -26,6 +24,8 @@ app.post("/api/urls",(req,res)=> {
       message:"Invalid URL"
     });
   }
+  const shortCode=crypto.randomBytes(4).toString("hex");
+  const shortUrl=`http://localhost:${PORT}/${shortCode}`;
   res.json({
     message:"URL shorened succesfully",
     originalUrl,
