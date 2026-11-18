@@ -49,6 +49,16 @@ app.get("/api/urls",async (req,res)=> {
   }
 });
 
+app.get("/api/urls/:shortCode/analytics",async (req,res)=> {
+  let code=req.params.shortCode;
+  let url=await Url.findOne({shortCode:code});
+  if(!url){
+    res.status(404).json({
+      message:"Url dosent exist"
+    });
+  }
+});
+
 app.post("/api/urls",async (req,res)=> {
   try{
     const originalUrl=req.body.originalUrl;
