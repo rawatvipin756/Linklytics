@@ -18,15 +18,33 @@ app.get("/:shortCode",async (req,res)=> {
     const code=req.params.shortCode;
     const url=await Url.findOne({shortCode:code});
     if(!url){
-      return res.status(400).json({
+      return res.status(404).json({
         message:"Url not found"
       });
     }
+    await Url.findOneAndUpdate(
+      {shortCode:code},
+      {$inc:{clicks:1}}
+    );
     res.redirect(url.originalUrl);
   }catch(error){
     consoel.error("Error in finding code",error);
     res.status(500).json({
       message:"Server error"
+    });
+  }
+});
+
+app.get("/api/urls",async (req,res)=> {
+  try{
+    const urls=await Url.find();
+    res.status(200).json({
+      urls
+    });
+  }catch(error){
+    console.error("Error fetching urls:",error);
+    res.status(500).json({
+      message:"Server error while fetching URLs"
     });
   }
 });
