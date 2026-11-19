@@ -50,13 +50,19 @@ app.get("/api/urls",async (req,res)=> {
 });
 
 app.get("/api/urls/:shortCode/analytics",async (req,res)=> {
-  let code=req.params.shortCode;
-  let url=await Url.findOne({shortCode:code});
+  const code=req.params.shortCode;
+  const url=await Url.findOne({shortCode:code});
   if(!url){
     res.status(404).json({
       message:"Url dosent exist"
     });
   }
+  res.status(200).json({
+    originalUrl: url.originalUrl,
+    shortCode: url.shortCode,
+    clicks: url.clicks,
+    createdAt: url.createdAt
+  });
 });
 
 app.post("/api/urls",async (req,res)=> {
