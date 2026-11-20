@@ -50,19 +50,26 @@ app.get("/api/urls",async (req,res)=> {
 });
 
 app.get("/api/urls/:shortCode/analytics",async (req,res)=> {
-  const code=req.params.shortCode;
-  const url=await Url.findOne({shortCode:code});
-  if(!url){
-    res.status(404).json({
-      message:"Url dosent exist"
+  try{
+    const code=req.params.shortCode;
+    const url=await Url.findOne({shortCode:code});
+    if(!url){
+      res.status(404).json({
+        message:"Url dosent exist"
+      });
+    }
+    res.status(200).json({
+      originalUrl: url.originalUrl,
+      shortCode: url.shortCode,
+      clicks: url.clicks,
+      createdAt: url.createdAt
+    });
+  }catch(error){
+    console.error("Analytic error",error);
+    res.status(500).json({
+      message:"Server errorwhile fetching analytics"
     });
   }
-  res.status(200).json({
-    originalUrl: url.originalUrl,
-    shortCode: url.shortCode,
-    clicks: url.clicks,
-    createdAt: url.createdAt
-  });
 });
 
 app.post("/api/urls",async (req,res)=> {
@@ -102,6 +109,26 @@ app.post("/api/urls",async (req,res)=> {
     console.error("Error creating short URL",error);
     res.status(500).json({
       message:"Server error while shortening URL"
+    });
+  }
+});
+
+app.delete("/api/urls/:id",async (req,res)=> {
+  try{
+    const id=req.params.id;
+    const deleteUrl=await Url.findByIdAndDelete(id);
+    if(!deleteUrl){
+      res.status(404).json({
+        message:"Url not found"
+      });
+    }
+    return res.status(200).json({
+      message:"URL deleted succesfully"
+    });
+  }catch(error){
+    console.error("Error in deleting URL",error);
+    res.status(500).json({
+      message:"Error is deleting url"
     });
   }
 });
