@@ -1,4 +1,7 @@
+import {useState} from "react";
+
 const App=()=>{
+  const [url,setUrl]=useState("");
   return(
     <div className="min-h-screen bg-gray-50">
       <nav className="max-w-7xl mx-auto flex justify-between items-center p-6">
@@ -18,6 +21,8 @@ const App=()=>{
         <div className="flex gap-3 mt-8">
           <input
             type="text"
+            value={url}
+            onChange={(e)=>setUrl(e.target.value)}
             placeholder="Enter your long URL"
             className="flex-1 border rounded-lg px-4 py-3" 
           />
@@ -26,7 +31,7 @@ const App=()=>{
           </button>
         </div>
         <p className="mt-6 text-gray-500">
-          Your shortened URL will appear here.
+          Entered URL:{url}
         </p>
       </main>
     </div>
