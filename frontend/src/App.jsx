@@ -1,22 +1,36 @@
 const App=()=>{
   return(
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl m-auto flex justify-between mt-2.5">
-        <h1 className="text-4xl font-bold text-blue-600">Linklytics</h1>
-        <nav className="ml-0.5">
-          <a className="ml-0.5" href="/">HOME</a>
-          <a className="ml-0.5" href="/dashboard">DASHBOARD</a>
-        </nav>
-      </div>
-      <div>
-        <h1>horten Your Links. Track Every Click.</h1>
-        <p>Linklystic is about gettunf short link</p>
-        <input type="text"></input>
-        <button type="submit">Shorten URL</button>
-        <p>Your shortern url will display hear</p>
-      </div>
+      <nav className="max-w-7xl mx-auto flex justify-between items-center p-6">
+        <h1 className="text-3xl font-bold text-blue-600">Linklytics</h1>
+        <div className="flex gap-6">
+          <a className="hover:text-blue-600" href="/">HOME</a>
+          <a className="hover:text-blue-600" href="/dashboard">DASHBOARD</a>
+        </div>
+      </nav>
+      <main className="max-w-3xl mx-auto text-center mt-20 px-6">
+        <h2 className="text-4xl font-bold text-gray-900">
+          Shorten Your Links. Track every click.
+        </h2>
+        <p className="text-gray-500 mt-4">
+          Create short links and track their performance with Linklytics.
+        </p>
+        <div className="flex gap-3 mt-8">
+          <input
+            type="text"
+            placeholder="Enter your long URL"
+            className="flex-1 border rounded-lg px-4 py-3" 
+          />
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+            Shorten URL
+          </button>
+        </div>
+        <p className="mt-6 text-gray-500">
+          Your shortened URL will appear here.
+        </p>
+      </main>
     </div>
-  )
+  );
 }
 
 export default App;
