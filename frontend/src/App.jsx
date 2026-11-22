@@ -1,7 +1,22 @@
 import {useState} from "react";
+import axios from "axios";
 
 const App=()=>{
   const [url,setUrl]=useState("");
+  const [shortUrl,setShortUrl]=useState("");
+
+  const handleShorten=async ()=> {
+    try{
+      const response=await axios.post(
+        "http://localhost:5000/api/urls",
+        {originalUrl:url}
+      );
+      setShortUrl(response.data.shortUrl);
+    }catch(error){
+      console.error("Error shortening URL:", error);
+    }
+  };
+
   return(
     <div className="min-h-screen bg-gray-50">
       <nav className="max-w-7xl mx-auto flex justify-between items-center p-6">
@@ -25,8 +40,14 @@ const App=()=>{
             onChange={(e)=>setUrl(e.target.value)}
             placeholder="Enter your long URL"
             className="flex-1 border rounded-lg px-4 py-3" 
-          />
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+          />{
+            shortUrl && (
+              <p className="mt-6 text-green-600">
+                Short URL:{shortUrl}
+              </p>
+            )
+          }
+          <button onClick={handleShorten} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
             Shorten URL
           </button>
         </div>
