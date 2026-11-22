@@ -1,5 +1,6 @@
 import {useState} from "react";
 import axios from "axios";
+import Dashboard from "./components/Dashboard";
 
 const App=()=>{
   const [url,setUrl]=useState("");
@@ -15,6 +16,10 @@ const App=()=>{
     }catch(error){
       console.error("Error shortening URL:", error);
     }
+  };
+
+  const handleCopy=()=> {
+    navigator.clipboard.writeText(shortUrl);
   };
 
   return(
@@ -42,9 +47,13 @@ const App=()=>{
             className="flex-1 border rounded-lg px-4 py-3" 
           />{
             shortUrl && (
-              <p className="mt-6 text-green-600">
-                Short URL:{shortUrl}
-              </p>
+              <div className="mt-6">
+                <p className="text-green-600">{shortUrl}</p>
+                <button
+                  className="mt-3 bg-gray-800 text-white px-4 py-2 rounded-lg"
+                  onClick={handleCopy}
+                >Copy Url</button>
+              </div>
             )
           }
           <button onClick={handleShorten} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
@@ -55,6 +64,7 @@ const App=()=>{
           Entered URL:{url}
         </p>
       </main>
+       <Dashboard/>
     </div>
   );
 }
