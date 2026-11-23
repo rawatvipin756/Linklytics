@@ -1,9 +1,11 @@
 import {useState} from "react";
 import {useEffect} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard=()=> {
   const [urls, setUrls] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(()=> {
     const fetchUrls=async()=> {
@@ -50,7 +52,9 @@ const Dashboard=()=> {
           >
             Delete
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          <button 
+          onClick={()=> navigate(`/analytics/${url.shortCode}`)}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
             View Analytics
           </button>
         </div>
