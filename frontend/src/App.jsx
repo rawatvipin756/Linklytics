@@ -2,6 +2,7 @@ import {useState} from "react";
 import axios from "axios";
 import { Link, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
+import Analytics from "./components/Analytics";
 
 const Home=()=>{
   const [url,setUrl]=useState("");
@@ -69,6 +70,7 @@ const App=()=> {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/analytics/:shortCode" element={<Analytics />} />
       </Routes>
     </div>
   )
