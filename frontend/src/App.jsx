@@ -25,6 +25,7 @@ const Home=()=>{
       toast.error("Please enter a valid URL");
       return;
     }
+    setLoading(true);
     try{
       const response=await axios.post(
         "http://localhost:5000/api/urls",
@@ -34,6 +35,9 @@ const Home=()=>{
       toast.success("URL created successfully!");
     }catch(error){
       console.error("Error shortening URL:", error);
+      toast.error("Failed to shorten URL!");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -57,8 +61,11 @@ const Home=()=>{
           placeholder="Enter your long URL"
           className="flex-1 border rounded-lg px-4 py-3" 
         />
-        <button onClick={handleShorten} className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-          Shorten URL
+        <button 
+          onClick={handleShorten}
+          disabled={loading}
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+          {loading ? "Shortening..." : "Shorten URL"}
         </button>
       </div>
       {shortUrl && (
