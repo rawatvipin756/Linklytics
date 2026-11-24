@@ -23,28 +23,31 @@ const Analytics=()=> {
   },[shortCode]);
 
   if (error) {
-    return (
-      <div className="text-center mt-20 text-red-500">
-        {error}
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="mt-5 block mx-auto bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-        >Back to Dashboard</button>
-      </div>
-    );
-  }
+  return (
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center px-6">
+      <p className="text-red-400 text-lg">{error}</p>
+
+      <button
+        onClick={() => navigate("/dashboard")}
+        className="mt-5 bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl transition"
+      >
+        Back to Dashboard
+      </button>
+    </div>
+  );
+}
 
   if(!analytics){
     return(
-      <div className="text-center mt-20 text-gray-500">
-        Loading analytics...
-      </div>
+      <div className="min-h-screen bg-slate-950 text-slate-400 flex items-center justify-center">
+  Loading analytics...
+</div>
     )
   }
 
   
 return (
-  <div className="min-h-screen bg-slate-950 text-white p-6 md:p-10">
+  <div className="bg-slate-950 text-white px-6 py-10">
 
     <div className="max-w-5xl mx-auto">
 

@@ -70,26 +70,8 @@ const averageClicks = totalUrls > 0
 
   
 return (
-  <div className="min-h-screen bg-slate-950 text-white flex">
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 p-6 hidden md:block">
-      <h1 className="text-2xl font-bold text-blue-500 mb-10">
-        Linklytics
-      </h1>
-
-      <nav className="space-y-3">
-        <button
-          onClick={() => navigate("/")}
-          className="w-full text-left px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white"
-        >
-          Home
-        </button>
-
-        <button className="w-full text-left px-4 py-3 rounded-xl bg-blue-600 text-white">
-          Dashboard
-        </button>
-      </nav>
-    </aside>
-    <main className="flex-1 p-6 md:p-10">
+  <div className="min-h-screen bg-slate-950 text-white">
+    <main className="max-w-5xl w-full mx-auto px-6 py-10">
       <header className="flex justify-between items-center mb-10">
         <div>
           <h2 className="text-3xl font-bold">Dashboard</h2>
