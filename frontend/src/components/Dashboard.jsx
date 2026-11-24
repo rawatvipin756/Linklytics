@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 const Dashboard=()=> {
   const [urls, setUrls] = useState([]);
   const navigate = useNavigate();
+  const [loading,setLoading]=(true);
 
   useEffect(()=> {
     const fetchUrls=async()=> {

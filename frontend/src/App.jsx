@@ -41,8 +41,13 @@ const Home=()=>{
     }
   };
 
-  const handleCopy=()=> {
-    navigator.clipboard.writeText(shortUrl);
+  const handleCopy=async ()=> {
+    try{
+      await navigator.clipboard.writeText(shortUrl);
+      toast.success("URL copied successfully!")
+    }catch(error){
+      toast.error("Error in copying URL");
+    }
   };
 
   return(
