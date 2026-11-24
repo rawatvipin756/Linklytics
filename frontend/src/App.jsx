@@ -3,18 +3,35 @@ import axios from "axios";
 import { Link, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Analytics from "./components/Analytics";
+import { toast } from "react-toastify";
 
 const Home=()=>{
   const [url,setUrl]=useState("");
   const [shortUrl,setShortUrl]=useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleShorten=async ()=> {
+    if(!url.trim()){
+      toast.error("Please enter a valid URL");
+      return;
+    }
+    try{
+      const parsedUrl=new URL(url);
+      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:"){
+        toast.error("Only HTTP and HTTPS URLs are allowed");
+        return;
+      }
+    }catch(error){
+      toast.error("Please enter a valid URL");
+      return;
+    }
     try{
       const response=await axios.post(
         "http://localhost:5000/api/urls",
         {originalUrl:url}
       );
       setShortUrl(response.data.shortUrl);
+      toast.success("URL created successfully!");
     }catch(error){
       console.error("Error shortening URL:", error);
     }

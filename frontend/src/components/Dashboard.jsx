@@ -2,6 +2,7 @@ import {useState} from "react";
 import {useEffect} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Dashboard=()=> {
   const [urls, setUrls] = useState([]);
@@ -26,8 +27,10 @@ const Dashboard=()=> {
         prevUrls.filter((url)=>url._id!==id)
       );
       console.log("API response:",response.data);
+      toast.success("URL deleted successfully!");
     }catch(error){
       console.error("Error deleting URL:",error);
+      toast.error("Failed to delete URL!");
     }
   };
 
