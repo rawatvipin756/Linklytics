@@ -42,48 +42,85 @@ const Analytics=()=> {
     )
   }
 
-  return(
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">URL Analytics</h1>
-      <div className="bg-blue-600 text-white p-8 rounded-xl shadow-sm">
-        <p className="text-lg">Total Clicks</p>
-        <h2 className="text-5xl font-bold mt-3">
+  
+return (
+  <div className="min-h-screen bg-slate-950 text-white p-6 md:p-10">
+
+    <div className="max-w-5xl mx-auto">
+
+      {/* Header */}
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-10">
+        <div>
+          <h1 className="text-3xl font-bold">URL Analytics</h1>
+          <p className="text-slate-400 mt-2">
+            Track the performance of your shortened URL
+          </p>
+        </div>
+
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-5 py-3 rounded-xl transition"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
+
+      {/* Total Clicks */}
+      <div className="bg-gradient-to-br from-blue-700 to-indigo-800 p-8 rounded-2xl shadow-lg mb-8">
+        <p className="text-blue-100 text-lg">Total Clicks</p>
+
+        <h2 className="text-5xl font-bold mt-4">
           {analytics.clicks}
         </h2>
-        <p className="text-blue-100 mt-2">
-          Total visits to your shortend URL
+
+        <p className="text-blue-200 mt-3">
+          Total visits to your shortened URL
         </p>
       </div>
-      <div className="bg-white p-6 rounded-xl shadow-sm border mt-6">
-        <h2 className="text-xl font-bold mb-5">
+
+      {/* URL Details */}
+      <div className="bg-slate-900 border border-slate-800 p-7 rounded-2xl">
+
+        <h2 className="text-xl font-semibold mb-7">
           URL Details
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
+
           <div>
-            <p className="text-sm text-gray-500">Original URL</p>
-            <p className="text-gray-800 break-all">
+            <p className="text-sm text-slate-400 mb-2">
+              Original URL
+            </p>
+            <p className="text-slate-200 break-all">
               {analytics.originalUrl}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">Short Code</p>
-            <p className="text-blue-600 font-semibold">
+          <div className="border-t border-slate-800 pt-5">
+            <p className="text-sm text-slate-400 mb-2">
+              Short Code
+            </p>
+            <p className="text-blue-400 font-semibold">
               {analytics.shortCode}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">Created At</p>
-            <p className="text-gray-800">
+          <div className="border-t border-slate-800 pt-5">
+            <p className="text-sm text-slate-400 mb-2">
+              Created At
+            </p>
+            <p className="text-slate-200">
               {new Date(analytics.createdAt).toLocaleString()}
             </p>
           </div>
+
         </div>
       </div>
+
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Analytics;

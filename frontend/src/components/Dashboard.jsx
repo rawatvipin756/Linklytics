@@ -10,6 +10,17 @@ const Dashboard=()=> {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
+  const totalUrls = urls.length;
+
+const totalClicks = urls.reduce(
+  (total, url) => total + url.clicks,
+  0
+);
+
+const averageClicks = totalUrls > 0
+  ? (totalClicks / totalUrls).toFixed(1)
+  : 0;
+
   useEffect(()=> {
     const fetchUrls=async()=> {
       try{
@@ -31,6 +42,7 @@ const Dashboard=()=> {
     if(!confirmDelete){
       return;
     }
+    setDeletingId(id);
     try{
       const response = await axios.delete(`http://localhost:5000/api/urls/${id}`);
       setUrls((prevUrls)=> 
@@ -56,47 +68,164 @@ const Dashboard=()=> {
     }
   }
 
-  return(
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Linklytics Dashboard</h1>
-      {loading ?(
-        <p>Loading URLs...</p>
-      ):urls.length===0?(
-        <p>No URLs found. Create your first short URL!</p>
-      ):(urls.map((url)=> (
-        <div key={url._id} className="bg-white p-5 rounded-xl shadow-sm border mb-4">
-          <p className="text-gray-700 font-medium">Original URL:{url.originalUrl}</p>
-          <a
-            href={`http://localhost:5000/${url.shortCode}`}
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-600 underline"
-          >
-            <p className="text-blue-600 font-semibold inline">Short Code: </p>http://localhost:5000/{url.shortCode}
-          </a>
-          <p className="text-gray-500 text-sm">Clicks:{url.clicks}</p>
-          <button
-            onClick={()=> handleDelete(url._id)}
-            disabled={deletingId === url._id}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:opacity-50"
-          >
-            {deletingId === url._id ? "Deleting..." : "Delete"}
-          </button>
-          <button 
-          onClick={()=> navigate(`/analytics/${url.shortCode}`)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-            View Analytics
-          </button>
-          <button
-            onClick={() => handleCopy(url.shortCode)}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-          >
-            Copy URL
-          </button>
+  
+return (
+  <div className="min-h-screen bg-slate-950 text-white flex">
+    <aside className="w-64 bg-slate-900 border-r border-slate-800 p-6 hidden md:block">
+      <h1 className="text-2xl font-bold text-blue-500 mb-10">
+        Linklytics
+      </h1>
+
+      <nav className="space-y-3">
+        <button
+          onClick={() => navigate("/")}
+          className="w-full text-left px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white"
+        >
+          Home
+        </button>
+
+        <button className="w-full text-left px-4 py-3 rounded-xl bg-blue-600 text-white">
+          Dashboard
+        </button>
+      </nav>
+    </aside>
+    <main className="flex-1 p-6 md:p-10">
+      <header className="flex justify-between items-center mb-10">
+        <div>
+          <h2 className="text-3xl font-bold">Dashboard</h2>
+          <p className="text-slate-400 mt-2">
+            Manage and track your shortened URLs
+          </p>
         </div>
-      )))}
+
+        <button
+          onClick={() => navigate("/")}
+          className="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-xl font-medium transition"
+        >
+          + Create URL
+        </button>
+      </header>
+
+<section className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+
+  <div className="flex justify-between items-center mb-6">
+    <div>
+      <h3 className="text-xl font-semibold">Your URLs</h3>
+      <p className="text-slate-400 text-sm mt-1">
+        Manage and track your shortened links
+      </p>
     </div>
-  )
+    <span className="text-sm text-slate-400">
+      {totalUrls} links
+    </span>
+  </div>
+
+  {loading ? (
+    <p className="text-slate-400 py-8 text-center">
+      Loading URLs...
+    </p>
+  ) : urls.length === 0 ? (
+    <div className="text-center py-12">
+      <p className="text-slate-300 text-lg font-medium">
+        No URLs found
+      </p>
+      <p className="text-slate-500 text-sm mt-2">
+        Create your first short URL to get started!
+      </p>
+      <button
+        onClick={() => navigate("/")}
+        className="mt-5 bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg"
+      >
+        Create URL
+      </button>
+    </div>
+  ) : (
+    <div className="overflow-x-auto">
+      <table className="w-full text-left min-w-[750px]">
+
+        <thead>
+          <tr className="text-slate-400 text-sm border-b border-slate-700">
+            <th className="py-4 px-3 font-medium">Original URL</th>
+            <th className="py-4 px-3 font-medium">Short URL</th>
+            <th className="py-4 px-3 font-medium">Clicks</th>
+            <th className="py-4 px-3 font-medium">Created</th>
+            <th className="py-4 px-3 font-medium">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {urls.map((url) => (
+            <tr
+              key={url._id}
+              className="border-b border-slate-800 hover:bg-slate-800/60 transition"
+            >
+              <td className="py-5 px-3 max-w-[220px]">
+                <p className="text-slate-200 truncate" title={url.originalUrl}>
+                  {url.originalUrl}
+                </p>
+              </td>
+
+              <td className="py-5 px-3">
+                <a
+                  href={`http://localhost:5000/${url.shortCode}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-400 hover:text-blue-300"
+                >
+                  {url.shortCode}
+                </a>
+              </td>
+
+              <td className="py-5 px-3">
+                <span className="bg-blue-950 text-blue-300 px-3 py-1 rounded-full text-sm">
+                  {url.clicks}
+                </span>
+              </td>
+
+              <td className="py-5 px-3 text-slate-400 text-sm">
+                {new Date(url.createdAt).toLocaleDateString()}
+              </td>
+
+              <td className="py-5 px-3">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleCopy(url.shortCode)}
+                    className="bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-lg text-sm"
+                  >
+                    Copy
+                  </button>
+
+                  <button
+                    onClick={() => navigate(`/analytics/${url.shortCode}`)}
+                    className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm"
+                  >
+                    View
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(url._id)}
+                    disabled={deletingId === url._id}
+                    className="bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded-lg text-sm"
+                  >
+                    {deletingId === url._id ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+
+      </table>
+    </div>
+  )}
+
+</section>
+
+
+    </main>
+  </div>
+);
+
 }
 
 export default Dashboard;
