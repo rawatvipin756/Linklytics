@@ -30,7 +30,7 @@ app.get("/:shortCode",async (req,res)=> {
     );
     res.redirect(url.originalUrl);
   }catch(error){
-    consoel.error("Error in finding code",error);
+    console.error("Error in finding code",error);
     res.status(500).json({
       message:"Server error"
     });
@@ -56,7 +56,7 @@ app.get("/api/urls/:shortCode/analytics",async (req,res)=> {
     const code=req.params.shortCode;
     const url=await Url.findOne({shortCode:code});
     if(!url){
-      res.status(404).json({
+      return res.status(404).json({
         message:"Url dosent exist"
       });
     }
@@ -120,7 +120,7 @@ app.delete("/api/urls/:id",async (req,res)=> {
     const id=req.params.id;
     const deleteUrl=await Url.findByIdAndDelete(id);
     if(!deleteUrl){
-      res.status(404).json({
+      return res.status(404).json({
         message:"Url not found"
       });
     }
