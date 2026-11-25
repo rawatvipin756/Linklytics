@@ -4,10 +4,12 @@ require("dotenv").config();
 const connectDB=require("./config/db");
 const Url=require("./models/Url");
 const cors=require("cors");
+const authRoutes = require("./routes/authRoutes");
 
 const app=express();
 app.use(express.json());
 app.use(cors());
+app.use("/api/auth",authRoutes);
 
 const PORT=5000;
 
