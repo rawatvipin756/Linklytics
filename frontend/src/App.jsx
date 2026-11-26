@@ -4,6 +4,7 @@ import { Link, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Analytics from "./components/Analytics";
 import { toast } from "react-toastify";
+import Signup from "./pages/Signup";
 
 const Home=()=>{
   const [url,setUrl]=useState("");
@@ -27,9 +28,14 @@ const Home=()=>{
     }
     setLoading(true);
     try{
+      const token=localStorage.getItem("token");
       const response=await axios.post(
         "http://localhost:5000/api/urls",
-        {originalUrl:url}
+        {originalUrl:url},{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       setShortUrl(response.data.shortUrl);
       toast.success("URL created successfully!");
@@ -63,7 +69,7 @@ return (
 
       <h1 className="text-4xl md:text-6xl font-bold leading-tight">
         Shorten Your Links.
-        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+        <span className="block text-transparent bg-clip-text bg-gradient-to from-blue-400 to-purple-500">
           Track Every Click.
         </span>
       </h1>
@@ -221,6 +227,7 @@ return (
 
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/analytics/:shortCode" element={<Analytics />} />
     </Routes>
