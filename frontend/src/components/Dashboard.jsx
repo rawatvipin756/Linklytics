@@ -24,7 +24,14 @@ const averageClicks = totalUrls > 0
   useEffect(()=> {
     const fetchUrls=async()=> {
       try{
-        const response=await axios.get("http://localhost:5000/api/urls");
+        const token=localStorage.getItem("token");
+        const response=await axios.get(
+          "http://localhost:5000/api/urls",{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }
+        );
         setUrls(response.data.urls);
       }catch(error){
         console.error("Error fetching URLs:",error);
@@ -44,7 +51,14 @@ const averageClicks = totalUrls > 0
     }
     setDeletingId(id);
     try{
-      const response = await axios.delete(`http://localhost:5000/api/urls/${id}`);
+      const token=localStorage.getItem("token");
+      const response = await axios.delete(
+        `http://localhost:5000/api/urls/${id}`,{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      );
       setUrls((prevUrls)=> 
         prevUrls.filter((url)=>url._id!==id)
       );

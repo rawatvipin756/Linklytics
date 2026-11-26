@@ -12,7 +12,14 @@ const Analytics=()=> {
   useEffect(()=> {
     const fetchAnalytics=async ()=> {
       try{
-        const response=await axios.get(`http://localhost:5000/api/urls/${shortCode}/analytics`);
+        const token=localStorage.getItem("token");
+        const response=await axios.get(
+          `http://localhost:5000/api/urls/${shortCode}/analytics`,{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }
+        );
         setAnalytics(response.data);
       }catch(error){
         setError("Unable to fetch analytics. URL may not exist.");

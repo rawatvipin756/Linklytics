@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Analytics from "./components/Analytics";
 import { toast } from "react-toastify";
 import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 
 const Home=()=>{
   const [url,setUrl]=useState("");
@@ -230,6 +231,7 @@ return (
       <Route path="/signup" element={<Signup />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/analytics/:shortCode" element={<Analytics />} />
+      <Route path="/login" element={<Login />} />
     </Routes>
 
   </div>
