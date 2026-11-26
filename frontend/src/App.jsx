@@ -1,6 +1,6 @@
 import {useState} from "react";
 import axios from "axios";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Routes, Route,useNavigate } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Analytics from "./components/Analytics";
 import { toast } from "react-toastify";
@@ -56,6 +56,10 @@ const Home=()=>{
       toast.error("Error in copying URL");
     }
   };
+
+  const handleLogout=async()=> {
+
+  }
 
  
 return (
@@ -196,6 +200,17 @@ return (
 }
 
 const App=()=> {
+
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  localStorage.removeItem("token");
+
+  toast.success("Logged out successfully!");
+
+  navigate("/login");
+};
+const isLoggedIn = Boolean(localStorage.getItem("token"));
   
 return (
   <div className="min-h-screen bg-slate-950 text-white">
@@ -222,6 +237,14 @@ return (
             DASHBOARD
           </Link>
         </div>
+        {isLoggedIn && (
+  <button
+    onClick={handleLogout}
+    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white"
+  >
+    Logout
+  </button>
+)}
 
       </div>
     </nav>
