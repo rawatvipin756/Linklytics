@@ -5,6 +5,7 @@ const connectDB=require("./config/db");
 const Url=require("./models/Url");
 const cors=require("cors");
 const authRoutes = require("./routes/authRoutes");
+const authMiddleware = require("./middleware/authMiddleware");
 
 const app=express();
 app.use(express.json());
@@ -39,9 +40,11 @@ app.get("/:shortCode",async (req,res)=> {
   }
 });
 
-app.get("/api/urls",async (req,res)=> {
+app.get("/api/urls",authMiddleware,async (req,res)=> {
   try{
-    const urls=await Url.find();
+    const urls=await Url.find({
+      user:req.user.id
+    });
     res.status(200).json({
       urls
     });
@@ -53,10 +56,13 @@ app.get("/api/urls",async (req,res)=> {
   }
 });
 
-app.get("/api/urls/:shortCode/analytics",async (req,res)=> {
+app.get("/api/urls/:shortCode/analytics",authMiddleware,async (req,res)=> {
   try{
     const code=req.params.shortCode;
-    const url=await Url.findOne({shortCode:code});
+    const url=await Url.findOne({
+      shortCode:code,
+      user:req.user.id
+    });
     if(!url){
       return res.status(404).json({
         message:"Url dosent exist"
@@ -76,7 +82,7 @@ app.get("/api/urls/:shortCode/analytics",async (req,res)=> {
   }
 });
 
-app.post("/api/urls",async (req,res)=> {
+app.post("/api/urls",authMiddleware,async (req,res)=> {
   try{
     const originalUrl=req.body.originalUrl;
     if(!originalUrl){
@@ -101,8 +107,9 @@ app.post("/api/urls",async (req,res)=> {
     const shortUrl=`http://localhost:${PORT}/${shortCode}`;
     const newUrl=await Url.create({
       originalUrl,
-      shortCode
-    })
+      shortCode,
+      user:req.user.id
+    });
     res.status(201).json({
       message:"URL shorened succesfully",
       originalUrl:newUrl.originalUrl,
@@ -117,10 +124,13 @@ app.post("/api/urls",async (req,res)=> {
   }
 });
 
-app.delete("/api/urls/:id",async (req,res)=> {
+app.delete("/api/urls/:id",authMiddleware,async (req,res)=> {
   try{
     const id=req.params.id;
-    const deleteUrl=await Url.findByIdAndDelete(id);
+    const deleteUrl=await Url.findByIdAndDelete({
+      _id:id,
+      user:req.user.id
+    });
     if(!deleteUrl){
       return res.status(404).json({
         message:"Url not found"
@@ -135,6 +145,13 @@ app.delete("/api/urls/:id",async (req,res)=> {
       message:"Error is deleting url"
     });
   }
+});
+
+app.get("/api/protected", authMiddleware, (req, res) => {
+  res.status(200).json({
+    message: "You accessed a protected route!",
+    userId: req.user.id
+  });
 });
 
 const startServer=async()=> {
