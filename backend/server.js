@@ -27,11 +27,12 @@ app.get("/:shortCode",async (req,res)=> {
         message:"Url not found"
       });
     }
-    await Url.findOneAndUpdate(
-      {shortCode:code},
-      {$inc:{clicks:1}}
-    );
-    res.redirect(url.originalUrl);
+    url.clicks+=1;
+    url.clickHistory.push({
+      clickedAt:new Date()
+    });
+    await url.save();
+    return res.redirect(url.originalUrl);
   }catch(error){
     console.error("Error in finding code",error);
     res.status(500).json({
@@ -68,16 +69,35 @@ app.get("/api/urls/:shortCode/analytics",authMiddleware,async (req,res)=> {
         message:"Url dosent exist"
       });
     }
+    const today=new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow=new Date(today);
+    tomorrow.setDate(tomorrow.getDate()+1);
+    const clicksToday=url.clickHistory.filter(click=> 
+      click.clickedAt >=today &&
+      click.clickedAt < tomorrow).length;
+    const last7Days=new Date();
+    last7Days.setDate(last7Days.getDate()-6);
+    last7Days.setHours(0,0,0,0);
+    const clicksLast7Days=url.clickHistory.filter(click=> {
+      click.clickedAt >= last7Days
+    }).length;
+    const recentClicks=[...url.clickHistory]
+      .sort((a,b)=>b.clickedAt-a.clickedAt)
+      .slice(0,10);
     res.status(200).json({
       originalUrl: url.originalUrl,
       shortCode: url.shortCode,
       clicks: url.clicks,
-      createdAt: url.createdAt
+      clicksToday,
+      clicksLast7Days,
+      createdAt: url.createdAt,
+      recentClicks
     });
   }catch(error){
     console.error("Analytic error",error);
     res.status(500).json({
-      message:"Server errorwhile fetching analytics"
+      message:"Server error while fetching analytics"
     });
   }
 });
