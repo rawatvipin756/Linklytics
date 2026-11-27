@@ -6,6 +6,7 @@ import Analytics from "./components/Analytics";
 import { toast } from "react-toastify";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Home=()=>{
   const [url,setUrl]=useState("");
@@ -200,61 +201,81 @@ return (
 }
 
 const App=()=> {
+  const navigate=useNavigate();
 
-  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(localStorage.getItem("token"))
+  );
 
-const handleLogout = () => {
-  localStorage.removeItem("token");
-
-  toast.success("Logged out successfully!");
-
-  navigate("/login");
-};
-const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const handleLogout=()=> {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    toast.success("Logged out successfully!");
+    navigate("/login");
+  };
   
 return (
   <div className="min-h-screen bg-slate-950 text-white">
 
     <nav className="bg-slate-900 border-b border-slate-800">
-      <div className="max-w-7xl mx-auto flex justify-between items-center p-6">
+  <div className="max-w-7xl mx-auto flex justify-between items-center p-6">
 
-        <Link to="/" className="text-3xl font-bold text-blue-500">
-          Linklytics
-        </Link>
+    {/* Logo */}
+    <Link to="/" className="text-3xl font-bold text-blue-500">
+      Linklytics
+    </Link>
 
-        <div className="flex gap-6 text-sm font-medium">
-          <Link
-            to="/"
-            className="text-slate-300 hover:text-blue-400 transition"
-          >
-            HOME
-          </Link>
+    {/* Navigation links */}
+    <div className="flex gap-6 text-sm font-medium">
+      <Link to="/" className="text-slate-300 hover:text-blue-400">
+        HOME
+      </Link>
 
-          <Link
-            to="/dashboard"
-            className="text-slate-300 hover:text-blue-400 transition"
-          >
+      {isLoggedIn ? (
+        <>
+          <Link to="/dashboard" className="text-slate-300 hover:text-blue-400">
             DASHBOARD
           </Link>
-        </div>
-        {isLoggedIn && (
-  <button
-    onClick={handleLogout}
-    className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white"
-  >
-    Logout
-  </button>
-)}
 
-      </div>
-    </nav>
+          <button onClick={handleLogout} className="text-red-400">
+            LOGOUT
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login" className="text-slate-300 hover:text-blue-400">
+            LOGIN
+          </Link>
 
+          <Link to="/signup" className="text-slate-300 hover:text-blue-400">
+            SIGNUP
+          </Link>
+        </>
+      )}
+    </div>
+
+  </div>
+</nav>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/analytics/:shortCode" element={<Analytics />} />
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/signup"
+        element={<Signup setIsLoggedIn={setIsLoggedIn} />}
+      />
+      <Route
+        path="/login"
+        element={<Login setIsLoggedIn={setIsLoggedIn} />}
+      />
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      }/>
+      <Route path="/analytics/:shortCode" element={
+        <ProtectedRoute>
+          <Analytics />
+        </ProtectedRoute>
+      }/>
     </Routes>
 
   </div>

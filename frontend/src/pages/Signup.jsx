@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Signup=()=> {
+const Signup=({ setIsLoggedIn })=> {
   const [name,setName]=useState("");
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
@@ -20,6 +20,7 @@ const Signup=()=> {
         {name,email,password}
       );
       localStorage.setItem("token",response.data.token);
+      setIsLoggedIn(true);
       toast.success("Account created successfully!");
       navigate("/dashboard");
     }catch(error){

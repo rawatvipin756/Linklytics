@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Login=()=> {
+const Login=({setIsLoggedIn})=> {
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
   const [loading,setLoading]=useState(false);
@@ -19,6 +19,7 @@ const Login=()=> {
         {email,password}
       );
       localStorage.setItem("token",response.data.token);
+      setIsLoggedIn(true);
       toast.success("Login successfull!");
       navigate("/dashboard");
     }catch(error){
