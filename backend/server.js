@@ -37,14 +37,10 @@ app.get("/api/urls",authMiddleware,async (req,res)=> {
 app.get("/api/urls/:shortCode/analytics",authMiddleware,async (req,res)=> {
   try{
     const code=req.params.shortCode;
-    console.log("Analytics route reached!");
-console.log("Short code:", code);
-console.log("User ID:", req.user.id);
     const url=await Url.findOne({
       shortCode:code,
       user:req.user.id
     });
-    console.log("Found URL:", url);
     if(!url){
       return res.status(404).json({
         message:"Url dosent exist"
@@ -57,23 +53,36 @@ console.log("User ID:", req.user.id);
     const clicksToday=url.clickHistory.filter(click=> 
       click.clickedAt >=today &&
       click.clickedAt < tomorrow).length;
-    const last7Days=new Date();
-    last7Days.setDate(last7Days.getDate()-6);
-    last7Days.setHours(0,0,0,0);
-    const clicksLast7Days=url.clickHistory.filter(click=> {
-      return click.clickedAt >= last7Days
-    }).length;
+    // Last 7 days
+    const last7Days = new Date();
+    last7Days.setDate(last7Days.getDate() - 6);
+    last7Days.setHours(0, 0, 0, 0);
+
+    const clicksLast7Days = url.clickHistory.filter(click =>
+      click.clickedAt >= last7Days
+    ).length;
+
+    // Last 30 days
+    const last30Days = new Date();
+    last30Days.setDate(last30Days.getDate() - 29);
+    last30Days.setHours(0, 0, 0, 0);
+
+    const clicksLast30Days = url.clickHistory.filter(click =>
+      click.clickedAt >= last30Days
+    ).length;
     const recentClicks=[...url.clickHistory]
       .sort((a,b)=>b.clickedAt-a.clickedAt)
       .slice(0,10);
-    res.status(200).json({
+    return res.status(200).json({
       originalUrl: url.originalUrl,
       shortCode: url.shortCode,
       clicks: url.clicks,
       clicksToday,
       clicksLast7Days,
+      clicksLast30Days,
       createdAt: url.createdAt,
-      recentClicks
+      recentClicks,
+      clickHistory: url.clickHistory
     });
   }catch(error){
     console.error("Analytic error",error);
