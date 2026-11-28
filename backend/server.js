@@ -18,29 +18,6 @@ app.get("/",(req,res)=> {
   res.send("Linklytics server is running!");
 });
 
-app.get("/:shortCode",async (req,res)=> {
-  try{
-    const code=req.params.shortCode;
-    const url=await Url.findOne({shortCode:code});
-    if(!url){
-      return res.status(404).json({
-        message:"Url not found"
-      });
-    }
-    url.clicks+=1;
-    url.clickHistory.push({
-      clickedAt:new Date()
-    });
-    await url.save();
-    return res.redirect(url.originalUrl);
-  }catch(error){
-    console.error("Error in finding code",error);
-    res.status(500).json({
-      message:"Server error"
-    });
-  }
-});
-
 app.get("/api/urls",authMiddleware,async (req,res)=> {
   try{
     const urls=await Url.find({
@@ -60,10 +37,14 @@ app.get("/api/urls",authMiddleware,async (req,res)=> {
 app.get("/api/urls/:shortCode/analytics",authMiddleware,async (req,res)=> {
   try{
     const code=req.params.shortCode;
+    console.log("Analytics route reached!");
+console.log("Short code:", code);
+console.log("User ID:", req.user.id);
     const url=await Url.findOne({
       shortCode:code,
       user:req.user.id
     });
+    console.log("Found URL:", url);
     if(!url){
       return res.status(404).json({
         message:"Url dosent exist"
@@ -80,7 +61,7 @@ app.get("/api/urls/:shortCode/analytics",authMiddleware,async (req,res)=> {
     last7Days.setDate(last7Days.getDate()-6);
     last7Days.setHours(0,0,0,0);
     const clicksLast7Days=url.clickHistory.filter(click=> {
-      click.clickedAt >= last7Days
+      return click.clickedAt >= last7Days
     }).length;
     const recentClicks=[...url.clickHistory]
       .sort((a,b)=>b.clickedAt-a.clickedAt)
@@ -98,6 +79,29 @@ app.get("/api/urls/:shortCode/analytics",authMiddleware,async (req,res)=> {
     console.error("Analytic error",error);
     res.status(500).json({
       message:"Server error while fetching analytics"
+    });
+  }
+});
+
+app.get("/:shortCode",async (req,res)=> {
+  try{
+    const code=req.params.shortCode;
+    const url=await Url.findOne({shortCode:code});
+    if(!url){
+      return res.status(404).json({
+        message:"Url not found"
+      });
+    }
+    url.clicks+=1;
+    url.clickHistory.push({
+      clickedAt:new Date()
+    });
+    await url.save();
+    return res.redirect(url.originalUrl);
+  }catch(error){
+    console.error("Error in finding code",error);
+    res.status(500).json({
+      message:"Server error"
     });
   }
 });
